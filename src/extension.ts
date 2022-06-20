@@ -1,40 +1,75 @@
-import { ExtensionContext, commands, window, workspace } from "vscode";
+import {
+    ExtensionContext,
+    commands,
+    window,
+    workspace,
+    StatusBarAlignment,
+    Disposable,
+} from "vscode";
 
-import { MinecraftServer } from "./websocket";
+import { Reloader } from "./reloader";
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
-export function activate(context: ExtensionContext) {
-    // Use the console to output diagnostic information (console.log) and errors (console.error)
-    // This line of code will only be executed once when your extension is activated
-    console.log(
-        'Congratulations, your extension "lapis256.minecraft-auto-reloader" is now active!'
-    );
+const EXTENSION_NAME = "lapis256.minecraft-auto-reloader";
+const START_SERVER_COMMAND = `${EXTENSION_NAME}.startServer`;
+const STOP_SERVER_COMMAND = `${EXTENSION_NAME}.stopServer`;
 
-    const output = window.createOutputChannel("Behavior Reloader");
+const status = window.createStatusBarItem(StatusBarAlignment.Right);
 
-    const server = new MinecraftServer(8080);
-
-    output.appendLine("Websocket server opened on port 8080.");
-    // workspace.onDidChangeWorkspaceFolders();
-
-    // The command has been defined in the package.json file
-    // Now provide the implementation of the command with registerCommand
-    // The commandId parameter must match the command field in package.json
-    let disposable = commands.registerCommand(
-        "lapis256.minecraft-auto-reloader.helloWorld",
-        () => {
-            server.broadcastSendReloadCommand();
-            // The code you place here will be executed every time your command is executed
-            // Display a message box to the user
-            window.showInformationMessage(
-                "Hello World from BehaviorAutoReloader!"
-            );
-        }
-    );
-
-    context.subscriptions.push(disposable);
+function setStartedStatus(port: number) {
+    status.text = `WSS Port: ${port}`;
+    status.tooltip = "Click to stop websocket server.";
+    status.command = STOP_SERVER_COMMAND;
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+function setStoppedStatus() {
+    status.text = "Start WebSocket Server";
+    status.tooltip = "Click to start websocket server.";
+    status.command = START_SERVER_COMMAND;
+}
+
+function getConfiguration<T>(section: string): T | undefined {
+    return workspace.getConfiguration(EXTENSION_NAME).get<T>(section);
+}
+
+const reloader = new Reloader();
+
+export function activate(context: ExtensionContext) {
+    const output = window.createOutputChannel("Minecraft Auto Reloader");
+
+    setStoppedStatus();
+    status.show();
+
+    let onChangeEventHandler: Disposable;
+
+    context.subscriptions.push(
+        commands.registerCommand(START_SERVER_COMMAND, () => {
+            const port = getConfiguration<number>("port")!;
+
+            reloader.start(port);
+            setStartedStatus(port);
+
+            output.appendLine(`Websocket server opened on port ${port}.`);
+
+            onChangeEventHandler = workspace.onDidSaveTextDocument((ev) => {
+                output.appendLine(`Reload: ${ev.fileName}`);
+                reloader.reload();
+            });
+        })
+    );
+
+    context.subscriptions.push(
+        commands.registerCommand(STOP_SERVER_COMMAND, () => {
+            reloader.stop();
+            setStoppedStatus();
+
+            output.appendLine(`Websocket server closed.`);
+
+            onChangeEventHandler.dispose();
+        })
+    );
+}
+
+export function deactivate() {
+    reloader.stop();
+    status.dispose();
+}

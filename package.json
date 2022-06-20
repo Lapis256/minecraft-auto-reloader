@@ -20,10 +20,26 @@
         "workspaceContains:**/manifest.json"
     ],
     "contributes": {
+        "configuration": {
+            "title": "Minecraft Auto Reloader",
+            "properties": {
+                "lapis256.minecraft-auto-reloader.port": {
+                    "description": "Websocket server port.",
+                    "type": "integer",
+                    "default": 8080
+                }
+            }
+        },
         "commands": [
             {
-                "command": "lapis256.minecraft-auto-reloader.helloWorld",
-                "title": "Hello World"
+                "command": "lapis256.minecraft-auto-reloader.startServer",
+                "title": "Start Server",
+                "category": "Minecraft Auto Reloader"
+            },
+            {
+                "command": "lapis256.minecraft-auto-reloader.stopServer",
+                "title": "Stop Server",
+                "category": "Minecraft Auto Reloader"
             }
         ]
     },

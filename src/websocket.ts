@@ -88,6 +88,10 @@ export class MinecraftServer {
         );
     }
 
+    close() {
+        this.#server.close();
+    }
+
     broadcastSendCommand(command: string) {
         for (const client of this.clients) {
             client.sendCommand(command);
