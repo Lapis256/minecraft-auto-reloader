@@ -76,7 +76,6 @@
         "vsce": "^2.9.1"
     },
     "dependencies": {
-        "jsonc-parser": "^3.0.0",
         "uuid": "^8.3.2",
         "ws": "^8.8.0"
     }
