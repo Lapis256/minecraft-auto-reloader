@@ -1,9 +1,12 @@
 {
-    "name": "lapis256.minecraft-auto-reloader",
+    "name": "minecraft-auto-reloader",
     "displayName": "Minecraft Auto Reloader",
     "description": "",
     "license": "MIT",
     "version": "0.0.1",
+    "author": {
+        "name": "Lapis256"
+    },
     "main": "./dist/extension.js",
     "repository": {
         "url": "github.com",
@@ -16,14 +19,14 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:lapis256.minecraft-auto-reloader.helloWorld",
+        "minecraft-auto-reloader.startServer",
         "workspaceContains:**/manifest.json"
     ],
     "contributes": {
         "configuration": {
             "title": "Minecraft Auto Reloader",
             "properties": {
-                "lapis256.minecraft-auto-reloader.port": {
+                "minecraft-auto-reloader.port": {
                     "description": "Websocket server port.",
                     "type": "integer",
                     "default": 8080
@@ -32,22 +35,22 @@
         },
         "commands": [
             {
-                "command": "lapis256.minecraft-auto-reloader.startServer",
+                "command": "minecraft-auto-reloader.startServer",
                 "title": "Start Server",
                 "category": "Minecraft Auto Reloader"
             },
             {
-                "command": "lapis256.minecraft-auto-reloader.stopServer",
+                "command": "minecraft-auto-reloader.stopServer",
                 "title": "Stop Server",
                 "category": "Minecraft Auto Reloader"
             }
         ]
     },
     "scripts": {
-        "vscode:prepublish": "yarn run esbuild-base -- --minify",
-        "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node",
-        "esbuild": "npm run esbuild-base -- --sourcemap",
-        "esbuild-watch": "npm run esbuild-base -- --sourcemap --watch",
+        "vscode:prepublish": "yarn run esbuild-base --minify",
+        "esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=dist/extension.js --external:vscode --format=cjs --platform=node --target=node16",
+        "esbuild": "yarn run esbuild-base --sourcemap",
+        "esbuild-watch": "yarn run esbuild-base --sourcemap --watch",
         "test-compile": "tsc -p ./",
         "compile-tests": "tsc -p . --outDir out",
         "watch-tests": "tsc -p . -w --outDir out",
@@ -73,6 +76,7 @@
         "vsce": "^2.9.1"
     },
     "dependencies": {
+        "jsonc-parser": "^3.0.0",
         "uuid": "^8.3.2",
         "ws": "^8.8.0"
     }

@@ -71,13 +71,23 @@ class MinecraftClient {
             });
         });
     }
+
+    sendMessage(message: string) {
+        this.sendCommand(
+            "tellraw @a " + JSON.stringify({ rawtext: [{ text: message }] })
+        );
+    }
 }
 
 export class MinecraftServer {
-    #server;
+    #server!: WebSocketServer;
 
-    constructor(port: number = 8080) {
-        this.#server = new WebSocketServer({ port });
+    constructor(port: number) {
+        this.#server = new WebSocketServer({ port: port });
+
+        if (this.#server.address() === null) {
+            throw Error(`Port ${port} is already in use.`);
+        }
     }
 
     get clients() {
@@ -88,27 +98,7 @@ export class MinecraftServer {
         );
     }
 
-    close() {
+    dispose() {
         this.#server.close();
-    }
-
-    broadcastSendCommand(command: string) {
-        for (const client of this.clients) {
-            client.sendCommand(command);
-        }
-    }
-
-    broadcastDialogMessage(message: string) {
-        this.broadcastSendCommand(
-            "tellraw @a " +
-                JSON.stringify({
-                    rawtext: [{ text: `[Behavior Auto Reloader] ${message}` }],
-                })
-        );
-    }
-
-    broadcastSendReloadCommand() {
-        this.broadcastSendCommand("reload");
-        this.broadcastDialogMessage("Reloaded");
     }
 }
