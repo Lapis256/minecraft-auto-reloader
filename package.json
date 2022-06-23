@@ -8,6 +8,8 @@
         "name": "Lapis256"
     },
     "main": "./dist/extension.js",
+    "icon": "images/icon.png",
+    "publisher": "Lapis256",
     "repository": {
         "url": "github.com",
         "type": "git"
@@ -73,7 +75,7 @@
         "glob": "^8.0.3",
         "mocha": "^10.0.0",
         "typescript": "^4.7.2",
-        "vsce": "^2.9.1"
+        "vsce": "^2.9.2"
     },
     "dependencies": {
         "uuid": "^8.3.2",
