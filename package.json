@@ -1,7 +1,7 @@
 {
     "name": "minecraft-auto-reloader",
     "displayName": "Minecraft Auto Reloader",
-    "description": "",
+    "description": "This is an extension that automatically executes a reload command when a file is changed.",
     "license": "MIT",
     "version": "1.0.0",
     "author": {
