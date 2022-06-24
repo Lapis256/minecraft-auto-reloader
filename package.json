@@ -11,7 +11,7 @@
     "icon": "images/icon.png",
     "publisher": "Lapis256",
     "repository": {
-        "url": "github.com",
+        "url": "https://github.com/Lapis256/minecraft-auto-reloader.git",
         "type": "git"
     },
     "engines": {
