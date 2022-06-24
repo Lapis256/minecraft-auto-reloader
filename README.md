@@ -1,4 +1,4 @@
-# Minecraft Auto Reloader(WIP)
+# Minecraft Auto Reloader
 **This document has been translated from Japanese to English using Google Translate.**
 
 This extension makes it easier to debug add-on development for Minecraft Bedrock Edition.
