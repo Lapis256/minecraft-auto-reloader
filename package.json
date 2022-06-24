@@ -21,7 +21,6 @@
         "Other"
     ],
     "activationEvents": [
-        "minecraft-auto-reloader.startServer",
         "workspaceContains:**/manifest.json"
     ],
     "contributes": {
